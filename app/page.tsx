@@ -10,7 +10,7 @@ const font = Poppins({
 
 export default function Home() {
   return (
-    <main className="h-full flex items-center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-500 to-blue-500">
+    <main className="h-screen flex items-center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-500 to-blue-500">
       <div className="space-y-4 text-center">
         <h2 className={cn("text-6xl font-semibold text-white drop-shadow-sm", font.className)}>
           🔐Auth

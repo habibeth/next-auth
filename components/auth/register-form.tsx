@@ -4,51 +4,62 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { CardWrapper } from "@/components/auth/card-wrapper";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginSchema } from "@/schemas";
+import { RegisterSchema } from "@/schemas";
 import * as z from "zod"
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useTransition } from "react";
-import { FormError } from "../form-error";
-import { FormSuccess } from "../form-success";
-import { login } from "@/action/login";
+import { FormError } from "@/components/form-error";
+import { FormSuccess } from "@/components/form-success";
+import { register } from "@/action/register";
 
-export const LoginForm = () => {
+export const RegisterForm = () => {
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
-    const form = useForm<z.infer<typeof LoginSchema>>({
-        resolver: zodResolver(LoginSchema),
+    const form = useForm<z.infer<typeof RegisterSchema>>({
+        resolver: zodResolver(RegisterSchema),
         defaultValues: {
+            name: "",
             email: "",
             password: ""
         }
     })
 
-
-    const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+    const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
         startTransition(() => {
-            login(values)
+            register(values)
                 .then(data => {
                     setError(data.error);
-                    setSuccess(data.success)
+                    setSuccess(data.success);
                 })
+            console.log(values)
         })
     }
-
-
     return (
         <div>
             <CardWrapper
-                headerLabel="WelCome to Back Our Website!"
-                backButtonHref="/auth/register"
-                backButtonLabel="Don't Have an Account?"
+                headerLabel="Create an Account!"
+                backButtonHref="/auth/login"
+                backButtonLabel="Already Have an Account?"
                 isShowSocial
-
             >
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                         <div className="space-y-6">
+                            <FormField
+                                control={form.control}
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Name</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} disabled={isPending} type="text" placeholder="Jon Doe" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                             <FormField
                                 control={form.control}
                                 name="email"
@@ -75,16 +86,16 @@ export const LoginForm = () => {
                                     </FormItem>
                                 )}
                             />
+                            <FormError label={error} />
+                            <FormSuccess label={success} />
                         </div>
-                        <FormError label={error} />
-                        <FormSuccess label={success} />
                         <Button
                             variant="default"
                             type="submit"
                             className="w-full"
                             disabled={isPending}
                         >
-                            Login
+                            Register
                         </Button>
                     </form>
                 </Form>
